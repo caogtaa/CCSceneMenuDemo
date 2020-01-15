@@ -1,6 +1,25 @@
 'use strict';
 
 module.exports = {
+  loadMenu() {
+    const fs = require('fs');
+    fs.readFile('./scene-menu-config.json', function(err, data) {
+      if (err) {
+        // file not exists
+        return;
+      }
+
+      try {
+        let conf = JSON.parse(data);
+        // todo: serialize to menu
+        Editor.log(`main.js read data: ${data}`);
+      } catch (err) {
+
+      } finally {
+
+      }
+    });
+  },
   injectContextMenu(webContents) {
     if (webContents.__gt_injected) {
       // already injected
@@ -145,10 +164,11 @@ module.exports = {
   messages: {
     'create-node' () {
       Editor.Scene.callSceneScript('cc-ext-scene-menu', 'create-node', null, function (err) {
-        // Editor.log('create-enemy finish');
+        // Editor.log('create-node finish');
       });
     },
     'on-context-menu' (event, param) {
+      param = param || {x:0, y:0, worldX: 0, worldY: 0};
       // todo: 从配置中加载菜单
       // 标准项：菜单名字、prefabuuid。支持创建为选中物体的子对象
       // 扩展项：自定义方法。通过ipc消息发送，带参数，参数中注入坐标。需要用户新建插件
@@ -164,6 +184,12 @@ module.exports = {
       ];
 
       Editor.Window.main.popupMenu(template, param.x, param.y);
+    },
+    'custom-context-menu' () {
+      Editor.Panel.open('cc-ext-scene-menu')
+    },
+    'update-context-menu' () {
+      this.loadMenu();
     }
     // 'say-hello' (event) {
     //   this.injectContextMenu(Editor.Window.main.nativeWin.webContents);
@@ -171,6 +197,8 @@ module.exports = {
     //   // send ipc message to panel
     //   // Editor.Scene.callSceneScript('cc-ext-scene-menu', 'hello');
     //   // Editor.Ipc.sendToPanel('cc-ext-scene-menu', 'cc-ext-scene-menu:hello');
+    //   // Editor.Ipc.sendToMain 
+    //   // todo: 所有可能的方法 https://docs.cocos.com/creator/manual/zh/extension/ipc-workflow.html#%E5%85%B6%E4%BB%96%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E6%96%B9%E6%B3%95
     // }
   },
 };

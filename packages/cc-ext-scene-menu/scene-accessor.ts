@@ -1,5 +1,5 @@
 
-function AttachNode(node, parent, worldPos, callback) {
+function attachNode(node, parent, worldPos, callback) {
   // world position to relative position
   parent.addChild(node);
   node.position = parent.convertToNodeSpaceAR(worldPos);
@@ -11,12 +11,13 @@ function AttachNode(node, parent, worldPos, callback) {
 }
 
 // load prefab by uuid, create instance under canvas or some parent node
-function InsertNode(param, callback) {
+function insertNode(param, callback) {
   param = param || { worldX: 0, worldY: 0 };
   let worldPos = cc.v2(param.worldX, param.worldY);   // todo: uniform param
 
   let parent = null;
   if (param.parentId) {
+    // @ts-ignore
     parent = cc.engine.getInstanceById(param.parentId);
   } else {
     // let canvas = cc.director.getScene().children[0];
@@ -45,12 +46,12 @@ function InsertNode(param, callback) {
         }
 
         let node = cc.instantiate(prefab);
-        AttachNode(node, parent, worldPos, callback);
+        attachNode(node, parent, worldPos, callback);
       }
     );
   } else {
     let node = new cc.Node();
-    AttachNode(node, parent, worldPos, callback);
+    attachNode(node, parent, worldPos, callback);
   }
 }
 
@@ -62,7 +63,7 @@ module.exports = {
       param.parentId = selected[0];
     }
 
-    InsertNode(param, (error, node) => {
+    insertNode(param, (error, node) => {
       if (node) {
         // select new node
         Editor.Selection.select('node', node.uuid);
