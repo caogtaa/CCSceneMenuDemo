@@ -15,6 +15,7 @@ function createNode(uuid) {
 function generateMenuTemplate(conf) {
   let result = [];
   for (let c of conf) {
+    // https://electronjs.org/docs/api/menu
     let item = {};
     item.label = c.name;
 
@@ -29,19 +30,6 @@ function generateMenuTemplate(conf) {
     result.push(item);
   }
 
-  // var template = [
-    //   {
-    //     label: 'create-node',
-    //     click: (e) => {
-    //       Editor.Scene.callSceneScript('cc-ext-scene-menu', 'create-node', param, (err) => {
-  
-    //       });
-    //     }
-    //   }
-    // ];
-
-    // 标准项：菜单名字、prefabuuid。支持创建为选中物体的子对象
-    // 扩展项：自定义方法。通过ipc消息发送，带参数，参数中注入坐标。需要用户新建插件
   return result;
 }
 
@@ -54,7 +42,7 @@ function loadMenu() {
     }
 
     try {
-      Editor.log(`main.js read data: ${data}`);
+      // Editor.log(`main.js read data: ${data}`);
       let config = JSON.parse(data);
       _menuTemplateCache = generateMenuTemplate(config);
     } catch (err) {
@@ -157,7 +145,7 @@ function injectContextMenu(webContents) {
           } catch(error) {}
 
           Editor.Ipc.sendToMain('cc-ext-scene-menu:on-context-menu', 
-            {x: downX, y: downY, worldX: worldX, worldY: worldY}, null, 1);
+            {x: downX, y: downY, worldX: worldX, worldY: worldY}, null);
         }
       });
     })();
@@ -165,13 +153,8 @@ function injectContextMenu(webContents) {
     1+2+3
   `;
 
-  // hackCode = `
-  //   Editor.log('ok im in ');
-  //   console.log('ok im in ');
-  //   10+14
-  // `;
   webContents.executeJavaScript(hackCode, function(result) {
-    // do nothing
+    // result = 6
   });
 }
 
@@ -184,8 +167,8 @@ module.exports = {
         return;
       }
     } catch(error) {
-      Editor.log(error);
       // usually happen when creator is just started and main window is not created
+      Editor.log(error);
     }
 
     // todo: 如果插件是中途加载的，判断webContents如果就绪了就注入
@@ -222,7 +205,7 @@ module.exports = {
       }
     },
     'custom-context-menu' () {
-      Editor.Panel.open('cc-ext-scene-menu')
+      Editor.Panel.open('cc-ext-scene-menu');
     },
     'update-context-menu' () {
       loadMenu();
