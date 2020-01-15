@@ -1,1 +1,14 @@
-{}
+[
+{
+"name": "empty node",
+"uuid": ""
+},
+{
+"name": "test1",
+"uuid": "fa3640a9-a401-4717-9da9-b83a44c42d76"
+},
+{
+"name": "test2",
+"uuid": "624465b9-c451-4e76-93e2-988fa5309a76"
+}
+]
