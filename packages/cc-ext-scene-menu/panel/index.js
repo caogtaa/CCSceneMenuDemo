@@ -49,11 +49,11 @@ Editor.Panel.extend({
       display: none;
     }
 
-    .expaned {
+    .collapsed {
 
     }
     
-    .active {
+    .active:not(.collapsed) {
       display: block;
     }
   `,
@@ -71,8 +71,8 @@ Editor.Panel.extend({
           <ul class="nested active">
             <li v-for="c in d.config">
               <span v-if="c.type == 2" class="caret" v-on:click="toggleCaret"></span>
-              <span v-bind:class="classFunc(c)" v-on:click="d.focus_item=c;" v-on:contextmenu="onContextMenu($event, false, c)">{{c.name}}</span>
-              <ul class="nested">
+              <span v-bind:class="{ selected: d.focus_item==c }" v-on:click="d.focus_item=c;" v-on:contextmenu="onContextMenu($event, false, c)">{{c.name}}</span>
+              <ul class="nested" v-bind:class="{ collapsed: c.type!='2' }">
                 <li v-for="subc in c.submenu">
                   <span v-bind:class="{ selected: d.focus_item==subc }" v-on:click="d.focus_item=subc;" v-on:contextmenu="onContextMenu($event, false, subc, c)">{{subc.name}}</span>
                 </li>
@@ -84,7 +84,7 @@ Editor.Panel.extend({
 
       <ui-box-container v-if="d.focus_item">
         <ui-input v-value="d.focus_item.name" placeholder="menu display name"></ui-input>
-        <ui-select v-value="d.focus_item.type">
+        <ui-select v-value="d.focus_item.type" @change="onTypeChange($event)">
           <option value="0">prefab</option>
           <option value="1">command</option>
           <option value="2">sub menu</option>
@@ -220,12 +220,7 @@ Editor.Panel.extend({
             menu.popup();
             e.preventDefault();
           },
-          classFunc(c) {
-            let d = this.d;
-            return {
-              selected: d.focus_item==c,
-              expaned: c.type==2 && this.$el.classList.contains("active")
-            };
+          onTypeChange(e) {
           }
         }
       });
