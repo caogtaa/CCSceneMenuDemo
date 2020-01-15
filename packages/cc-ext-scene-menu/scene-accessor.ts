@@ -4,7 +4,7 @@ function attachNode(node, parent, worldPos, callback) {
   parent.addChild(node);
   node.position = parent.convertToNodeSpaceAR(worldPos);
 
-  // todo: 加入undo列表，目前cc不支持
+  // todo: support undo
   if (callback) {
     callback(null, node);
   }

@@ -1,4 +1,5 @@
 // panel/index.js, this filename needs to match the one registered in package.json
+'use strict';
 
 let _config = {};
 Editor.Panel.extend({
@@ -10,6 +11,10 @@ Editor.Panel.extend({
 
     ul {
       list-style-type: none;
+    }
+
+    ul.root {
+      padding-inline-start: 15px;
     }
 
     ul li {
@@ -26,9 +31,6 @@ Editor.Panel.extend({
 
     .caret {
       cursor: pointer;
-      -webkit-user-select: none; /* Safari 3.1+ */
-      -moz-user-select: none; /* Firefox 2+ */
-      -ms-user-select: none; /* IE 10+ */
       user-select: none;
     }
     
@@ -40,13 +42,15 @@ Editor.Panel.extend({
     }
     
     .caret-down::before {
-      -ms-transform: rotate(90deg); /* IE 9 */
-      -webkit-transform: rotate(90deg); /* Safari */'
       transform: rotate(90deg);  
     }
     
     .nested {
       display: none;
+    }
+
+    .expaned {
+
     }
     
     .active {
@@ -58,18 +62,19 @@ Editor.Panel.extend({
   template: `
     <h2>custom context menu</h2>
     <hr />
-    <div v-if="loaded">
-      <ul>
+    <p>right click item to add sub item / remove item</p>
+    <div v-if="d.loaded">
+      <ul class="root">
         <li>
           <span class="caret caret-down" v-on:click="toggleCaret"></span>
-          <span v-bind:class="{ selected: focus_item==null }" v-on:click="focus_item=null;">context menu</span>
+          <span v-bind:class="{ selected: d.focus_item==null }" v-on:click="d.focus_item=null;" v-on:contextmenu="onContextMenu($event, true, null)">context menu (root)</span>
           <ul class="nested active">
-            <li v-for="c in config">
-              <span v-if="c.type == 2 && c.submenu && c.submenu.length > 0" class="caret" v-on:click="toggleCaret"></span>
-              <span v-bind:class="{ selected: focus_item==c }" v-on:click="focus_item=c;">{{c.name}}</span>
+            <li v-for="c in d.config">
+              <span v-if="c.type == 2" class="caret" v-on:click="toggleCaret"></span>
+              <span v-bind:class="classFunc(c)" v-on:click="d.focus_item=c;" v-on:contextmenu="onContextMenu($event, false, c)">{{c.name}}</span>
               <ul class="nested">
                 <li v-for="subc in c.submenu">
-                  <span v-bind:class="{ selected: focus_item==c }" v-on:click="focus_item=c;">{{subc.name}}</span>
+                  <span v-bind:class="{ selected: d.focus_item==subc }" v-on:click="d.focus_item=subc;" v-on:contextmenu="onContextMenu($event, false, subc, c)">{{subc.name}}</span>
                 </li>
               </ul>
             </li>
@@ -77,21 +82,23 @@ Editor.Panel.extend({
         </li>
       </ul>
 
-      <ui-box-container v-if="focus_item">
-        <ui-input v-value="focus_item.name" placeholder="menu display name"></ui-input>
-        <ui-select v-value="focus_item.type">
+      <ui-box-container v-if="d.focus_item">
+        <ui-input v-value="d.focus_item.name" placeholder="menu display name"></ui-input>
+        <ui-select v-value="d.focus_item.type">
           <option value="0">prefab</option>
           <option value="1">command</option>
           <option value="2">sub menu</option>
         </ui-select>
-        <ui-input v-if="focus_item.type=='0'" v-value="focus_item.uuid" placeholder="prefab uuid"></ui-input>
-        <ui-input v-if="focus_item.type=='1'" v-value="focus_item.method" placeholder="your plugin method"></ui-input>
-        <ui-input v-if="focus_item.type=='1'" v-value="focus_item.param" placeholder="parameter(string)"></ui-input>
+        <ui-input v-if="d.focus_item.type=='0'" v-value="d.focus_item.uuid" placeholder="prefab uuid"></ui-input>
+        <ui-input v-if="d.focus_item.type=='1'" v-value="d.focus_item.method" placeholder="your plugin method"></ui-input>
+        <ui-input v-if="d.focus_item.type=='1'" v-value="d.focus_item.param" placeholder="parameter(string)"></ui-input>
       </ui-box-container>
+
+      <ui-button id="save" @confirm="onSaveConfirm">Save</ui-button>
     </div>
     <ui-section v-if="false">
       <div class="header">config section</div>
-      <div class="row" v-for="c in config">
+      <div class="row" v-for="c in d.config">
         <ui-input v-value="c.name" placeholder="menu display name"></ui-input>
         <ui-select v-value="c.type">
           <option value="0">prefab</option>
@@ -139,19 +146,86 @@ Editor.Panel.extend({
       new window.Vue({
         el: this.shadowRoot,
         data: {
-          config: _config,
-          focus_item: null,
-          message: 'hello',
-          loaded: true
+          d: {
+            config: _config,
+            focus_item: null,
+            message: 'hello',
+            loaded: true
+          }
         },
         methods: {
-          onSaveConfirm (event) {
-            event.stopPropagation();
-            saveConfig();
+          onSaveConfirm (e) {
+            // e.stopPropagation();
+            // saveConfig();
           },
-          toggleCaret (event) {
-            event.target.classList.toggle('caret-down');
-            event.target.parentElement.querySelector(".nested").classList.toggle("active");
+          toggleCaret (e) {
+            e.target.classList.toggle('caret-down');
+            e.target.parentElement.querySelector(".nested").classList.toggle("active");
+          },
+          onContextMenu (e, isRoot, obj = null, parent = null) {
+            this.d.focus_item = obj;
+            let d = this.d;
+            let electron = require("electron");
+            let menuTemplate = [{
+              label: "add",
+              click () {
+                let newItem = {
+                  type: "0",
+                  name: "item_name",
+                  uuid: ""
+                };
+
+                if (isRoot) {
+                  d.config.push(newItem);
+                } else {
+                  if (!obj.submenu) {
+                    obj.submenu = [];
+                  }
+
+                  obj.type = 2;
+                  obj.submenu.push(newItem);
+                }
+              }
+            }];
+
+            if (!isRoot) {
+              let d = this.d;
+              menuTemplate.push({
+                label: "delete",
+                click () {
+                  if (obj && parent) {
+                    // deep level item
+                    const index = parent.submenu.indexOf(obj);
+                    if (index > -1) {
+                      if (d.focus_item == obj) {
+                        d.focus_item = null;
+                      }
+                      parent.submenu.splice(index, 1);
+                    }
+                  } else if (obj) {
+                    // 1st level item
+                    const index = config.indexOf(obj);
+                    if (index > -1) {
+                      if (d.focus_item == obj) {
+                        d.focus_item = null;
+                      }
+                      config.splice(index, 1);
+                    }
+                  }
+                }
+              });
+            }
+
+            let menu = electron.remote.Menu.buildFromTemplate(menuTemplate);
+            menu.popup();
+            e.preventDefault();
+          },
+          classFunc(c) {
+            let d = this.d;
+            return {
+              selected: d.focus_item==c,
+              expaned: c.type==2 && this.$el.classList.contains("active")
+            };
           }
         }
       });

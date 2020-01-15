@@ -1,17 +1,41 @@
 [
     {
-        "type": "1",
+        "type": "0",
         "name": "empty node",
         "uuid": ""
     },
     {
-        "type": 0,
+        "type": 2,
         "name": "test1",
-        "uuid": "fa3640a9-a401-4717-9da9-b83a44c42d76"
+        "uuid": "fa3640a9-a401-4717-9da9-b83a44c42d76",
+        "submenu": [
+            {
+                "type": "0",
+                "name": "item_name",
+                "uuid": ""
+            }
+        ]
     },
     {
-        "type": 0,
+        "type": 2,
         "name": "test2",
-        "uuid": "624465b9-c451-4e76-93e2-988fa5309a76"
+        "uuid": "624465b9-c451-4e76-93e2-988fa5309a76",
+        "submenu": [
+            {
+                "type": "0",
+                "name": "item_name",
+                "uuid": ""
+            },
+            {
+                "type": "0",
+                "name": "item_name",
+                "uuid": ""
+            }
+        ]
+    },
+    {
+        "type": "0",
+        "name": "item_name",
+        "uuid": ""
     }
 ]
