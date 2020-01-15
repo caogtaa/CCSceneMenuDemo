@@ -1,0 +1,23 @@
+{
+  "name": "cc-ext-scene-menu",
+  "version": "0.0.1",
+  "description": "Add context menu for Cocos Creator scene editor",
+  "author": "caogtaa",
+  "main": "main.js",
+  "main-menu": {
+    "i18n:MAIN_MENU.package.title/cc-ext-scene-menu/create-node": {
+      "message": "cc-ext-scene-menu:create-node"
+    },
+    "i18n:MAIN_MENU.package.title/cc-ext-scene-menu/custom-menu": {
+      "message": "cc-ext-scene-menu:custom-context-menu"
+    }
+  },
+  "panel": {
+    "main": "panel/index.js",
+    "type": "dockable",
+    "title": "custom-context-menu",
+    "width": 400,
+    "height": 300
+  },
+  "scene-script": "scene-accessor.ts"
+}
