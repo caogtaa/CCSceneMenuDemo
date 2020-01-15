@@ -107,7 +107,7 @@ module.exports = {
     //   10+14
     // `;
     webContents.executeJavaScript(hackCode, function(result) {
-      let k = 0;
+      // do nothing
     });
   },
 
