@@ -121,8 +121,8 @@ function injectContextMenu(webContents) {
         let gridRoot = document.getElementById('scene').shadowRoot.getElementById('sceneView').shadowRoot.getElementById('grid').shadowRoot;
         let vLabelRoot = getLabelRoot(gridRoot, 'vLabels');
         let hLabelRoot = getLabelRoot(gridRoot, 'hLabels');
-        let worldX = pixelToWorld(hLabelRoot, x);
-        let worldY = pixelToWorld(vLabelRoot, y);
+        let worldX = pixelToWorld(hLabelRoot, x+4); // horizontal label offset = 4 (move rightward in svg)
+        let worldY = pixelToWorld(vLabelRoot, y-15);  // vertical label offset = -15 (move upward in svg)
         return [worldX, worldY];
       };
     
