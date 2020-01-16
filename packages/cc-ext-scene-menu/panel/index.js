@@ -90,7 +90,7 @@ Editor.Panel.extend({
           <option value="2">sub menu</option>
         </ui-select>
         <ui-input v-if="d.focus_item.type=='0'" v-value="d.focus_item.uuid" placeholder="prefab uuid"></ui-input>
-        <ui-input v-if="d.focus_item.type=='1'" v-value="d.focus_item.method" placeholder="your plugin method"></ui-input>
+        <ui-input v-if="d.focus_item.type=='1'" v-value="d.focus_item.command" placeholder="your plugin message"></ui-input>
         <ui-input v-if="d.focus_item.type=='1'" v-value="d.focus_item.param" placeholder="parameter(string)"></ui-input>
       </ui-box-container>
 
@@ -106,7 +106,7 @@ Editor.Panel.extend({
           <option value="2">sub menu</option>
         </ui-select>
         <ui-input v-if="c.type=='0'" v-value="c.uuid" placeholder="prefab uuid"></ui-input>
-        <ui-input v-if="c.type=='1'" v-value="c.method" placeholder="your plugin method"></ui-input>
+        <ui-input v-if="c.type=='1'" v-value="c.command" placeholder="your plugin message"></ui-input>
         <ui-input v-if="c.type=='1'" v-value="c.param" placeholder="parameter(string)"></ui-input>
       </div>
 
@@ -150,7 +150,9 @@ Editor.Panel.extend({
             config: _config,
             focus_item: null,
             message: 'hello',
-            loaded: true
+            loaded: true,
+            command: '',
+            param: ''
           }
         },
         methods: {

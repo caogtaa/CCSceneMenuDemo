@@ -12,21 +12,42 @@ function createNode(uuid) {
   });
 }
 
+function sendCommand(command, param) {
+  param = param || {};
+  Object.assign(param, _paramCache);
+  Editor.Ipc.sendToMain(command, param, (err) => {
+    if (err)
+      Editor.log(err);
+  });
+}
+
 function generateMenuTemplate(conf) {
   let result = [];
   for (let c of conf) {
     // https://electronjs.org/docs/api/menu
     let item = {};
     item.label = c.name;
-
+    
     // item.click = createNode.bind(c.uuid);
     // the menu item auto unbound my function, why?
     // so I put uuid in closure
-    let uuid = c.uuid;
-    item.click = () => {
-      createNode(uuid);
-    };
-    
+    if (c.type == 0) {
+      // prefab
+      let uuid = c.uuid;
+      item.click = () => {
+        createNode(uuid);
+      };
+    } else if (c.type == 1) {
+      // command
+      item.click = () => {
+        sendCommand(c.command, c.param);
+      };
+    } else if (c.submenu) {
+      item.submenu = generateMenuTemplate(c.submenu);
+    } else {
+      // unexpected
+    }
+
     result.push(item);
   }
 
@@ -209,15 +230,10 @@ module.exports = {
     },
     'update-context-menu' () {
       loadMenu();
+    },
+    'say-hello' (event, param) {
+      let obj = JSON.parse(param);
+      Editor.log(`Hello! param: {x = ${obj.x}, y = ${obj.y}}`);
     }
-    // 'say-hello' (event) {
-    //   this.injectContextMenu(Editor.Window.main.nativeWin.webContents);
-
-    //   // send ipc message to panel
-    //   // Editor.Scene.callSceneScript('cc-ext-scene-menu', 'hello');
-    //   // Editor.Ipc.sendToPanel('cc-ext-scene-menu', 'cc-ext-scene-menu:hello');
-    //   // Editor.Ipc.sendToMain 
-    //   // todo: 所有可能的方法 https://docs.cocos.com/creator/manual/zh/extension/ipc-workflow.html#%E5%85%B6%E4%BB%96%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E6%96%B9%E6%B3%95
-    // }
   },
 };

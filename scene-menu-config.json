@@ -1,25 +1,32 @@
 [
     {
-        "type": "0",
-        "name": "empty node",
+        "type": "1",
+        "name": "edit menu",
         "uuid": "",
-        "submenu": []
+        "submenu": [],
+        "command": "cc-ext-scene-menu:custom-context-menu"
     },
     {
         "type": 2,
-        "name": "test1",
+        "name": "prefabs",
         "uuid": "fa3640a9-a401-4717-9da9-b83a44c42d76",
         "submenu": [
             {
                 "type": "0",
-                "name": "item_name",
-                "uuid": ""
+                "name": "prefab1",
+                "uuid": "fa3640a9-a401-4717-9da9-b83a44c42d76"
+            },
+            {
+                "type": "0",
+                "name": "prefab2",
+                "uuid": "624465b9-c451-4e76-93e2-988fa5309a76",
+                "submenu": []
             }
         ]
     },
     {
-        "type": 2,
-        "name": "test2",
+        "type": "1",
+        "name": "say-hello",
         "uuid": "624465b9-c451-4e76-93e2-988fa5309a76",
         "submenu": [
             {
@@ -32,19 +39,8 @@
                 "name": "item_name",
                 "uuid": ""
             }
-        ]
-    },
-    {
-        "type": 2,
-        "name": "item_name",
-        "uuid": "",
-        "submenu": [
-            {
-                "type": "0",
-                "name": "item_name",
-                "uuid": "",
-                "submenu": []
-            }
-        ]
+        ],
+        "command": "cc-ext-scene-menu:say-hello",
+        "param": "{\"x\":1, \"y\":2}"
     }
 ]
