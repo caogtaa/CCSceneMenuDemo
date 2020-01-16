@@ -89,7 +89,7 @@ function injectContextMenu(webContents) {
       function appendListener(node, eventType, fn = null) {
         node.addEventListener(eventType, (e) => {
           if (fn)	fn(e);
-        });		
+        }, true);		
       }
     
       let getLabelRoot = (gridRoot, className) => {
@@ -125,12 +125,31 @@ function injectContextMenu(webContents) {
         let worldY = pixelToWorld(vLabelRoot, y-15);  // vertical label offset = -15 (move upward in svg)
         return [worldX, worldY];
       };
-    
+
       let svgNode = null;
       let downX = 0;
       let downY = 0;
       let isDown = false;
-      appendListener(document, 'contextmenu', (e) => {
+      let postContextMenuMsg = () => {
+        let rect = svgNode.getBoundingClientRect();
+        downX -= rect.left;
+        downY -= rect.top;
+        let worldX = 0;
+        let worldY = 0;
+        try {
+          let arr = svgPosToWorld(downX, downY);
+          worldX = arr[0];
+          worldY = arr[1];
+        } catch(error) {}
+
+        Editor.Ipc.sendToMain('cc-ext-scene-menu:on-context-menu', 
+          {x: downX, y: downY, worldX: worldX, worldY: worldY}, null);
+      };
+    
+      appendListener(document, 'mousedown', (e) => {
+        if (e.button != 2)
+          return;
+
         // check if inside svg view
         if (!svgNode)
           svgNode = document.getElementById('scene').shadowRoot.getElementById('sceneView').shadowRoot.getElementById('gizmosView').shadowRoot.getElementById('SvgjsSvg1000');
@@ -149,22 +168,9 @@ function injectContextMenu(webContents) {
       });
     
       appendListener(document, 'mouseup', (e) => {
-        if (isDown && e.pageX == downX && e.pageY == downY) {
+        if (e.button == 2 && isDown && e.pageX == downX && e.pageY == downY) {
           isDown = false;
-
-          let rect = svgNode.getBoundingClientRect();
-          downX -= rect.left;
-          downY -= rect.top;
-          let worldX = 0;
-          let worldY = 0;
-          try {
-            let arr = svgPosToWorld(downX, downY);
-            worldX = arr[0];
-            worldY = arr[1];
-          } catch(error) {}
-
-          Editor.Ipc.sendToMain('cc-ext-scene-menu:on-context-menu', 
-            {x: downX, y: downY, worldX: worldX, worldY: worldY}, null);
+          postContextMenuMsg();
         }
       });
     })();
