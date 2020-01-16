@@ -176,7 +176,7 @@ Editor.Panel.extend({
                 click () {
                   let newItem = {
                     type: "0",
-                    name: "item_name",
+                    name: "New Item",
                     uuid: "",
                     submenu: [],
                     command: "",
@@ -241,11 +241,11 @@ Editor.Panel.extend({
     fs.readFile(configPath, function(err, data) {
       if (err) {
         // file not exists
-        initWindow({});
+        initWindow([]);
         return;
       }
 
-      let config = {};
+      let config = [];
       try {
         config = JSON.parse(data);
         // Editor.log(`index.js read data: ${data}`);
