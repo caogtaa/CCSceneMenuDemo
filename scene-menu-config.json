@@ -1,14 +1,14 @@
 [
     {
         "type": "1",
-        "name": "edit menu",
+        "name": "Edit Menu",
         "uuid": "",
         "submenu": [],
         "command": "cc-ext-scene-menu:custom-context-menu"
     },
     {
         "type": 2,
-        "name": "prefabs",
+        "name": "Create Node",
         "uuid": "fa3640a9-a401-4717-9da9-b83a44c42d76",
         "submenu": [
             {
@@ -26,21 +26,10 @@
     },
     {
         "type": "1",
-        "name": "say-hello",
+        "name": "Say Hello",
         "uuid": "624465b9-c451-4e76-93e2-988fa5309a76",
-        "submenu": [
-            {
-                "type": "0",
-                "name": "item_name",
-                "uuid": ""
-            },
-            {
-                "type": "0",
-                "name": "item_name",
-                "uuid": ""
-            }
-        ],
+        "submenu": [],
         "command": "cc-ext-scene-menu:say-hello",
-        "param": "{\"x\":1, \"y\":2}"
+        "param": "{\"a\":1, \"b\":2}"
     }
 ]

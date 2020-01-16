@@ -13,12 +13,10 @@ function createNode(uuid) {
 }
 
 function sendCommand(command, param) {
-  param = param || {};
-  Object.assign(param, _paramCache);
-  Editor.Ipc.sendToMain(command, param, (err) => {
-    if (err)
-      Editor.log(err);
-  });
+  let p = {};
+  Object.assign(p, _paramCache);
+  p.customParam = param;
+  Editor.Ipc.sendToMain(command, p, null);
 }
 
 function generateMenuTemplate(conf) {
@@ -232,8 +230,7 @@ module.exports = {
       loadMenu();
     },
     'say-hello' (event, param) {
-      let obj = JSON.parse(param);
-      Editor.log(`Hello! param: {x = ${obj.x}, y = ${obj.y}}`);
+      Editor.log(`Hello! param: {worldX = ${param.worldX}, worldY = ${param.worldY}}, customParam = ${param.customParam}`);
     }
   },
 };

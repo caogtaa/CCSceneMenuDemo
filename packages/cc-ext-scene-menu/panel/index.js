@@ -60,14 +60,14 @@ Editor.Panel.extend({
 
   // html template for panel
   template: `
-    <h2>custom context menu</h2>
+    <h2>Custom Scene Context Menu</h2>
     <hr />
-    <p>right click item to add sub item / remove item</p>
+    <p>Click to edit item, right click to add / remove item</p>
     <div v-if="d.loaded">
       <ul class="root">
         <li>
           <span class="caret caret-down" v-on:click="toggleCaret"></span>
-          <span v-bind:class="{ selected: d.focus_item==null }" v-on:click="d.focus_item=null;" v-on:contextmenu="onContextMenu($event, true, null)">context menu (root)</span>
+          <span v-bind:class="{ selected: d.focus_item==null }" v-on:click="d.focus_item=null;" v-on:contextmenu="onContextMenu($event, true, null)">Context Menu (root)</span>
           <ul class="nested active">
             <li v-for="c in d.config">
               <span v-show="c.type == 2" class="caret" v-on:click="toggleCaret"></span>
