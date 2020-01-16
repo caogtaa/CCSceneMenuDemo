@@ -12,6 +12,7 @@ Editor.Panel.extend({
 
     ul {
       list-style-type: none;
+      padding-inline-start: 20px;
     }
 
     ul.root {
@@ -33,6 +34,13 @@ Editor.Panel.extend({
     .caret {
       cursor: pointer;
       user-select: none;
+      width: 12px;
+      display: inline-block;
+    }
+
+    .caret-holder {
+      width: 12px;
+      display: inline-block;
     }
     
     .caret::before {
@@ -71,10 +79,12 @@ Editor.Panel.extend({
           <span v-bind:class="{ selected: d.focus_item==null }" v-on:click="d.focus_item=null;" v-on:contextmenu="onContextMenu($event, true, null)">Context Menu (root)</span>
           <ul class="nested active">
             <li v-for="c in d.config">
-              <span v-show="c.type == 2" class="caret" v-on:click="toggleCaret"></span>
+              <span v-show="c.type == '2'" class="caret" v-on:click="toggleCaret"></span>
+              <span v-show="c.type != '2'" class="caret-holder">&nbsp;</span>
               <span v-bind:class="{ selected: d.focus_item==c }" v-on:click="d.focus_item=c;" v-on:contextmenu="onContextMenu($event, false, c)">{{c.name}}</span>
               <ul class="nested" v-bind:class="{ collapsed: c.type!='2' }">
                 <li v-for="subc in c.submenu">
+                  <span class="caret-holder">&nbsp;</span>
                   <span v-bind:class="{ selected: d.focus_item==subc }" v-on:click="d.focus_item=subc;" v-on:contextmenu="onContextMenu($event, false, subc, c)">{{subc.name}}</span>
                 </li>
               </ul>
@@ -162,7 +172,7 @@ Editor.Panel.extend({
             if (!parent) {
               // max depth is 2
               menuTemplate.push({
-                label: "add",
+                label: "Add Child",
                 click () {
                   let newItem = {
                     type: "0",
@@ -193,7 +203,7 @@ Editor.Panel.extend({
             if (!isRoot) {
               let d = this.d;
               menuTemplate.push({
-                label: "delete",
+                label: "Delete",
                 click () {
                   if (obj && parent) {
                     // deep level item

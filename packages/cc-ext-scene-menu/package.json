@@ -2,7 +2,7 @@
   "name": "cc-ext-scene-menu",
   "version": "0.0.1",
   "description": "Add context menu for Cocos Creator scene editor",
-  "author": "caogtaa",
+  "author": "caogtaa@gmail.com",
   "main": "main.js",
   "main-menu": {
     "i18n:MAIN_MENU.package.title/Scene Menu/Edit Scene Menu": {

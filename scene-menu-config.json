@@ -7,7 +7,7 @@
         "command": "cc-ext-scene-menu:custom-context-menu"
     },
     {
-        "type": 2,
+        "type": "2",
         "name": "Create Node",
         "uuid": "fa3640a9-a401-4717-9da9-b83a44c42d76",
         "submenu": [
@@ -22,7 +22,8 @@
                 "uuid": "624465b9-c451-4e76-93e2-988fa5309a76",
                 "submenu": []
             }
-        ]
+        ],
+        "command": "none"
     },
     {
         "type": "1",
