@@ -7,6 +7,7 @@ Editor.Panel.extend({
 
   style: `
     :host { margin: 5px; }
+    :host ui-input { width: 100%; }
     h2 { color: #f90; }
 
     ul {
@@ -83,51 +84,40 @@ Editor.Panel.extend({
       </ul>
 
       <ui-box-container v-if="d.focus_item">
-        <ui-input v-value="d.focus_item.name" placeholder="menu display name"></ui-input>
-        <ui-select v-value="d.focus_item.type" @change="onTypeChange($event)">
-          <option value="0">prefab</option>
-          <option value="1">command</option>
-          <option value="2">sub menu</option>
-        </ui-select>
-        <ui-input v-if="d.focus_item.type=='0'" v-value="d.focus_item.uuid" placeholder="prefab uuid"></ui-input>
-        <ui-input v-if="d.focus_item.type=='1'" v-value="d.focus_item.command" placeholder="your plugin message"></ui-input>
-        <ui-input v-if="d.focus_item.type=='1'" v-value="d.focus_item.param" placeholder="parameter(string)"></ui-input>
+        <ui-prop name="Name">
+          <ui-input v-value="d.focus_item.name" placeholder="menu display name"></ui-input>
+        </ui-prop>
+        <ui-prop name="Type">
+          <ui-select v-value="d.focus_item.type" @change="onTypeChange($event)">
+            <option value="0">Prefab</option>
+            <option value="1">Command</option>
+            <option value="2">Sub Menu</option>
+          </ui-select>
+        </ui-prop>
+        <ui-prop name="Prefab uuid" v-if="d.focus_item.type=='0'">
+          <ui-input v-value="d.focus_item.uuid" placeholder="prefab uuid"></ui-input>
+        </ui-prop>
+        <ui-prop name="Command" v-if="d.focus_item.type=='1'">
+          <ui-input v-value="d.focus_item.command" placeholder="PluginName:CommandName"></ui-input>
+        </ui-prop>
+        <ui-prop name="Parameter" v-if="d.focus_item.type=='1'">
+          <ui-input v-value="d.focus_item.param" placeholder="(Optional) Command Parameter"></ui-input>
+        </ui-prop>
       </ui-box-container>
 
-      <ui-button id="save" @confirm="onSaveConfirm">Save</ui-button>
+      <hr />
+      <ui-button id="save" @confirm="onSaveConfirm">Save Menu</ui-button>
     </div>
-    <ui-section v-if="false">
-      <div class="header">config section</div>
-      <div class="row" v-for="c in d.config">
-        <ui-input v-value="c.name" placeholder="menu display name"></ui-input>
-        <ui-select v-value="c.type">
-          <option value="0">prefab</option>
-          <option value="1">command</option>
-          <option value="2">sub menu</option>
-        </ui-select>
-        <ui-input v-if="c.type=='0'" v-value="c.uuid" placeholder="prefab uuid"></ui-input>
-        <ui-input v-if="c.type=='1'" v-value="c.command" placeholder="your plugin message"></ui-input>
-        <ui-input v-if="c.type=='1'" v-value="c.param" placeholder="parameter(string)"></ui-input>
-      </div>
-
-      <ui-button id="save" @confirm="onSaveConfirm">Save</ui-button>
-    </ui-section>
   `,
 
   // element and variable binding
   $: {
-    // btn: '#btn',
-    // label: '#label',
-    // btnSave: '#save-config',
   },
 
   // method executed when template and styles are successfully loaded and initialized
   ready () {
     const fs = require('fs');
     const configPath = './scene-menu-config.json';  // project root folder
-    // this.$btnSave.addEventListener('confirm', () => {
-    //    saveConfig();
-    // });
 
     let saveConfig = () => {
       let data = JSON.stringify(_config, null, 4);
@@ -149,7 +139,6 @@ Editor.Panel.extend({
           d: {
             config: _config,
             focus_item: null,
-            message: 'hello',
             loaded: true,
             command: '',
             param: ''
@@ -179,7 +168,9 @@ Editor.Panel.extend({
                     type: "0",
                     name: "item_name",
                     uuid: "",
-                    submenu: []
+                    submenu: [],
+                    command: "",
+                    param: ""
                   };
 
                   if (isRoot) {
@@ -258,8 +249,8 @@ Editor.Panel.extend({
 
   // register your ipc messages here
   messages: {
-    'cc-ext-scene-menu:hello' (event) {
-      this.$label.innerText = 'Hello!';
+    'cc-ext-scene-menu:demo' (event) {
+      Editor.log('this is Demo');
     }
   }
 });
