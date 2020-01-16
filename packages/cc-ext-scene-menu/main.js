@@ -54,7 +54,8 @@ function generateMenuTemplate(conf) {
 
 function loadMenu() {
   const fs = require('fs');
-  fs.readFile('./scene-menu-config.json', function(err, data) {
+  const configPath = Editor.Project.path + '/scene-menu-config.json';
+  fs.readFile(configPath, function(err, data) {
     if (err) {
       // file not exists
       return;

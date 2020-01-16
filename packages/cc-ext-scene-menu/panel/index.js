@@ -127,7 +127,7 @@ Editor.Panel.extend({
   // method executed when template and styles are successfully loaded and initialized
   ready () {
     const fs = require('fs');
-    const configPath = './scene-menu-config.json';  // project root folder
+    const configPath = Editor.Project.path + '/scene-menu-config.json';
 
     let saveConfig = () => {
       let data = JSON.stringify(_config, null, 4);
