@@ -1,4 +1,10 @@
-// panel/index.js, this filename needs to match the one registered in package.json
+/*
+ * @Author: CGT (caogtaa@gmail.com) 
+ * @Date: 2020-01-16 22:09:21 
+ * @Last Modified by:   CGT (caogtaa@gmail.com) 
+ * @Last Modified time: 2020-01-16 22:09:21 
+ */
+
 'use strict';
 
 let _config = {};

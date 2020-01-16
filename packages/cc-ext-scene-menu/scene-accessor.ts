@@ -1,3 +1,9 @@
+/*
+ * @Author: CGT (caogtaa@gmail.com) 
+ * @Date: 2020-01-16 22:08:55 
+ * @Last Modified by:   CGT (caogtaa@gmail.com) 
+ * @Last Modified time: 2020-01-16 22:08:55 
+ */
 
 function attachNode(node, parent, worldPos, callback) {
   // world position to relative position

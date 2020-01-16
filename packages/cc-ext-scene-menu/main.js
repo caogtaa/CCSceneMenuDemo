@@ -1,3 +1,10 @@
+/*
+ * @Author: CGT (caogtaa@gmail.com) 
+ * @Date: 2020-01-16 22:09:08 
+ * @Last Modified by:   CGT (caogtaa@gmail.com) 
+ * @Last Modified time: 2020-01-16 22:09:08 
+ */
+
 'use strict';
 
 let _menuTemplateCache = null;
