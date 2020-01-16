@@ -20,14 +20,20 @@ function insertNode(param, callback) {
     // @ts-ignore
     parent = cc.engine.getInstanceById(param.parentId);
   } else {
-    // let canvas = cc.director.getScene().children[0];
-    // todo: canvas can be renamed
-    parent = cc.find('Canvas');;
+    // canvas can be renamed, should find cc.Canvas component in scene top level
+    // parent = cc.find('Canvas');
+    let scene = cc.director.getScene();
+    for (let s of scene.children) {
+      if (s.getComponent(cc.Canvas)) {
+        parent = s;
+        break;
+      } 
+    }
   }
 
   if (!parent) {
     if (callback)
-      callback('parent node not found, cancel.', null);
+      callback('Canvas or parent node not found, cancel.', null);
 
     return;
   }
@@ -67,7 +73,7 @@ module.exports = {
       if (node) {
         // select new node
         Editor.Selection.select('node', node.uuid);
-        Editor.log(`'${node.name}' created`);
+        // Editor.log(`'${node.name}' created`);
       }
 
       if (event.reply) {
