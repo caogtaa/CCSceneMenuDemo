@@ -2,7 +2,8 @@
     {
         "type": "0",
         "name": "empty node",
-        "uuid": ""
+        "uuid": "",
+        "submenu": []
     },
     {
         "type": 2,
@@ -34,8 +35,16 @@
         ]
     },
     {
-        "type": "0",
+        "type": 2,
         "name": "item_name",
-        "uuid": ""
+        "uuid": "",
+        "submenu": [
+            {
+                "type": "0",
+                "name": "item_name",
+                "uuid": "",
+                "submenu": []
+            }
+        ]
     }
 ]

@@ -70,7 +70,7 @@ Editor.Panel.extend({
           <span v-bind:class="{ selected: d.focus_item==null }" v-on:click="d.focus_item=null;" v-on:contextmenu="onContextMenu($event, true, null)">context menu (root)</span>
           <ul class="nested active">
             <li v-for="c in d.config">
-              <span v-if="c.type == 2" class="caret" v-on:click="toggleCaret"></span>
+              <span v-show="c.type == 2" class="caret" v-on:click="toggleCaret"></span>
               <span v-bind:class="{ selected: d.focus_item==c }" v-on:click="d.focus_item=c;" v-on:contextmenu="onContextMenu($event, false, c)">{{c.name}}</span>
               <ul class="nested" v-bind:class="{ collapsed: c.type!='2' }">
                 <li v-for="subc in c.submenu">
@@ -155,8 +155,8 @@ Editor.Panel.extend({
         },
         methods: {
           onSaveConfirm (e) {
-            // e.stopPropagation();
-            // saveConfig();
+            e.stopPropagation();
+            saveConfig();
           },
           toggleCaret (e) {
             e.target.classList.toggle('caret-down');
@@ -166,27 +166,36 @@ Editor.Panel.extend({
             this.d.focus_item = obj;
             let d = this.d;
             let electron = require("electron");
-            let menuTemplate = [{
-              label: "add",
-              click () {
-                let newItem = {
-                  type: "0",
-                  name: "item_name",
-                  uuid: ""
-                };
+            let menuTemplate = [];
+            let currentTarget = e.currentTarget;
+            if (!parent) {
+              // max depth is 2
+              menuTemplate.push({
+                label: "add",
+                click () {
+                  let newItem = {
+                    type: "0",
+                    name: "item_name",
+                    uuid: "",
+                    submenu: []
+                  };
 
-                if (isRoot) {
-                  d.config.push(newItem);
-                } else {
-                  if (!obj.submenu) {
-                    obj.submenu = [];
+                  if (isRoot) {
+                    d.config.push(newItem);
+                  } else {
+                    if (!obj.submenu) {
+                      obj.submenu = [];
+                    }
+
+                    obj.type = 2;
+                    obj.submenu.push(newItem);
+                    currentTarget.parentElement.querySelector(".nested").classList.add("active");
+                    currentTarget.parentElement.querySelector(".nested").classList.remove("collapsed");
+                    currentTarget.parentElement.querySelector(".caret").classList.add("caret-down");
                   }
-
-                  obj.type = 2;
-                  obj.submenu.push(newItem);
                 }
-              }
-            }];
+              });
+            }
 
             if (!isRoot) {
               let d = this.d;
